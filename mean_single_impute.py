@@ -15,7 +15,7 @@ class ImputeAndCalculateRMSE:
         self.true = 'hl-data_filtered.csv'
         self.imputer_mean = SimpleImputer(strategy='mean')
         self.output_dir = 'rmse'
-        self.imputed_dir = 'mean_imputed_data'
+        self.imputed_dir = 'mean_imputation_masked_data'
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
         if not os.path.exists(self.imputed_dir):

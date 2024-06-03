@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 import sys 
+import argparse
 from sklearn.experimental import enable_iterative_imputer 
 from sklearn.impute import IterativeImputer
 
@@ -14,9 +15,8 @@ class ImputeAndCalculateRMSE:
         self.exp_type = exp_type
         self.mask = f'hl-data_masked_{n_masked}.csv'
         self.true = 'hl-data_filtered.csv'
-        self.imputer_mean = SimpleImputer(strategy='mean')
         self.output_dir = 'rmse'
-        self.imputed_dir = 'dmi_imputed_data'
+        self.imputed_dir = 'dmi_impution_masked_data'
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
         if not os.path.exists(self.imputed_dir):
@@ -35,12 +35,14 @@ class ImputeAndCalculateRMSE:
             random_state = np.random.randint(0, 10000)
             imputer = IterativeImputer(sample_posterior=True, random_state=random_state)
             imputed_data = imputer.fit_transform(data)
-            imputed_vals = imputed_data[:,0]
+            imputed_vals = imputed_data[:,1]
             true_vals = true['A0'].values
             
             # Save imputed data
             imputed_df = pd.DataFrame({'A0': imputed_vals, 'ID': ID, 't': data['t'].values})
-            imputed_file_path = f'./{self.imputed_dir}/{mask.split('/')[0]}_mean_imputed_{self.n_masked}.csv'
+            imputed_file_path = f'./{self.imputed_dir}/{self.n_masked}/{file_path.split('/')[0]}_dmi_{i}.csv'
+            if not os.path.exists(f'./{self.imputed_dir}/{self.n_masked}'):
+                os.makedirs(f'./{self.imputed_dir}/{self.n_masked}')
             if not os.path.isfile(imputed_file_path):
                 imputed_df.to_csv(imputed_file_path, index=False, mode='a', header=True)
             else:
@@ -80,15 +82,16 @@ class ImputeAndCalculateRMSE:
                 idx = data_mask.loc[data_mask['ID'] == ID].index
                 #get t and A0 vales for the idx values
                 peptide_dat = data_mask.loc[idx, ['t', 'A0']]
-                true_peptide_dat = data_true.loc[idx, ['t','A0']] 
+                true_peptide_dat = data_true.loc[idx, ['t', 'A0']] 
                 #perform multiple imputation and calculate the average squared error for the peptide
                 se = self.peptide_dmi_and_rmse(peptide_dat, true_peptide_dat, mask, ID, n_imputations=10)
-                #squared error for the imputation for each peptide, these will be summed up later            
+                #append average squared error for the n imputations of the peptide; these will be summed up later            
                 mse_k.append(se)
                 
             #sum all the squared errors for each peptide in the strain 
             mse_sum_strain.append(sum(mse_k))
-            
+            break     
+    
         #sum all the squared errors for each strain in the experiment group 
         mse_sum_ctrl = sum(mse_sum_strain)
         n_ctrl_total = sum(n_ctrl) - 1 # -1 to account for the degrees of freedom
@@ -98,7 +101,7 @@ class ImputeAndCalculateRMSE:
 
     def save_rmse(self, rmse_value):
         with open(f'./{self.output_dir}/rmse_{self.exp_type}.csv', 'a') as f:
-            f.write(f'{rmse_value}, {self.n_masked}, mean_single_impute\n') 
+            f.write(f'{rmse_value}, {self.n_masked}, dmi\n') 
 
 def main(n_masked, exp_type):
     imputer = ImputeAndCalculateRMSE(n_masked, exp_type)
@@ -108,7 +111,7 @@ def main(n_masked, exp_type):
     print(f"RMSE for n_masked={n_masked}, exp_type={exp_type}: {rmse_value}")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Run mean imputation and calculate RMSE.')
+    parser = argparse.ArgumentParser(description='Run DMI and calculate RMSE.')
     parser.add_argument('n_masked', type=int, choices=[1, 2, 3, 4], help='Number of masked values')
     parser.add_argument('exp_type', type=str, choices=['ctrl', 'iso'], help='Experiment type')
     args = parser.parse_args()

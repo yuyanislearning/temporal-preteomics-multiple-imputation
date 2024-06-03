@@ -3,3 +3,4 @@ RMSE, n_masked, imputer
 0.3631433971635727, 2, mean_single_impute
 0.35182602360564, 3, mean_single_impute
 0.34359892436485656, 4, mean_single_impute
+0.06946118736996615, 1, dmi
