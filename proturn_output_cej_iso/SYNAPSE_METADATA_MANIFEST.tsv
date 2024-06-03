@@ -1,0 +1,4 @@
+path	parent	name	id	synapseStore	contentType	used	executed	activityName	activityDescription
+/Users/simhasankar/Documents/imputation_masking_validation/proturn_output_cej_iso/hl-data.out	syn4591883	hl-data.out	syn4591888	True			syn4634197.1;syn4636168.1;syn4635717.1;syn4636021.1;syn4636299.1;syn4633821.1	ProTurn	
+/Users/simhasankar/Documents/imputation_masking_validation/proturn_output_cej_iso/intensity.txt	syn4591883	intensity.txt	syn4724375	True	text/plain		syn4634197.1;syn4636168.1;syn4635717.1;syn4636021.1;syn4636299.1;syn4633821.1	ProTurn	
+/Users/simhasankar/Documents/imputation_masking_validation/proturn_output_cej_iso/hl.out	syn4591883	hl.out	syn4591889	True			syn4634197.1;syn4636168.1;syn4635717.1;syn4636021.1;syn4636299.1;syn4633821.1	ProTurn	
