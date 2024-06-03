@@ -28,22 +28,27 @@ class ImputeAndCalculateRMSE:
         return file_paths_masked, file_paths_true
     
     # Function to perform multiple imputation on a peptide in the dataset and return the average squared error across the 10 iterations 
-    def peptide_dmi_and_rmse(self, data, true, file_path, n_imputations=10):
+    def peptide_dmi_and_rmse(self, data, true, file_path, ID, n_imputations=10):
         se_i = []
+        #perform n imputations on the peptide level data 
         for i in range(n_imputations):
             random_state = np.random.randint(0, 10000)
             imputer = IterativeImputer(sample_posterior=True, random_state=random_state)
             imputed_data = imputer.fit_transform(data)
             imputed_vals = imputed_data[:,0]
             true_vals = true['A0'].values
-            se_i.append(np.sum((imputed_vals-true_vals)**2))
-
-            # Convert back to DataFrame for easier handling
-            imputed_df = pd.DataFrame(imputed_data, columns=data.columns)
             
-            # Save the imputed DataFrame to a CSV file
-            imputed_df.to_csv(os.path.join(output_dir, f'imputed_data_{i+1}.csv'), index=False)
-            #print(f'Imputation {i+1} completed and saved with random state {random_state}.')
+            # Save imputed data
+            imputed_df = pd.DataFrame({'A0': imputed_vals, 'ID': ID, 't': data['t'].values})
+            imputed_file_path = f'./{self.imputed_dir}/{mask.split('/')[0]}_mean_imputed_{self.n_masked}.csv'
+            if not os.path.isfile(imputed_file_path):
+                imputed_df.to_csv(imputed_file_path, index=False, mode='a', header=True)
+            else:
+                imputed_df.to_csv(imputed_file_path, index=False, mode='a', header=False)
+            
+            #calculate squared error for the imputed values for the peptide
+            se_i.append(np.sum((imputed_vals-true_vals)**2))
+            
         se_i = sum(se_i)/n_imputations
         return se_i
 
@@ -76,8 +81,9 @@ class ImputeAndCalculateRMSE:
                 #get t and A0 vales for the idx values
                 peptide_dat = data_mask.loc[idx, ['t', 'A0']]
                 true_peptide_dat = data_true.loc[idx, ['t','A0']] 
-                se = self.peptide_dmi_and_rmse(peptide_dat, true_peptide_dat, mask, n_imputations=10)
-                #squared error for the imputed values for each peptide, these will be summed up later            
+                #perform multiple imputation and calculate the average squared error for the peptide
+                se = self.peptide_dmi_and_rmse(peptide_dat, true_peptide_dat, mask, ID, n_imputations=10)
+                #squared error for the imputation for each peptide, these will be summed up later            
                 mse_k.append(se)
                 
             #sum all the squared errors for each peptide in the strain 
