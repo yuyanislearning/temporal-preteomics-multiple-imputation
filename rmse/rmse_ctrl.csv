@@ -1,4 +1,5 @@
-5.296641239713976, 1, mean_single_impute
-7.512944268470038, 2, mean_single_impute
-9.17261910634271, 3, mean_single_impute
-10.602169452632976, 4, mean_single_impute
+RMSE, n_masked, imputer
+0.37648100692169234, 1, mean_single_impute
+0.3631433971635727, 2, mean_single_impute
+0.35182602360564, 3, mean_single_impute
+0.34359892436485656, 4, mean_single_impute

@@ -1,9 +1,10 @@
-import pandas as pd 
+import pandas as pd
 import numpy as np
 import os
-import sys
-from sklearn.impute import SimpleImputer
-import argparse
+import sys 
+from sklearn.experimental import enable_iterative_imputer 
+from sklearn.impute import IterativeImputer
+
 
 class ImputeAndCalculateRMSE:
     def __init__(self, n_masked, exp_type):
@@ -15,7 +16,7 @@ class ImputeAndCalculateRMSE:
         self.true = 'hl-data_filtered.csv'
         self.imputer_mean = SimpleImputer(strategy='mean')
         self.output_dir = 'rmse'
-        self.imputed_dir = 'mean_imputed_data'
+        self.imputed_dir = 'dmi_imputed_data'
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
         if not os.path.exists(self.imputed_dir):
@@ -25,6 +26,26 @@ class ImputeAndCalculateRMSE:
         file_paths_masked = [f'{self.filepath_common}{s}_{self.exp_type}/{self.mask}' for s in self.strains]
         file_paths_true = [f'{self.filepath_common}{s}_{self.exp_type}/{self.true}' for s in self.strains]
         return file_paths_masked, file_paths_true
+    
+    # Function to perform multiple imputation on a peptide in the dataset and return the average squared error across the 10 iterations 
+    def peptide_dmi_and_rmse(self, data, true, file_path, n_imputations=10):
+        se_i = []
+        for i in range(n_imputations):
+            random_state = np.random.randint(0, 10000)
+            imputer = IterativeImputer(sample_posterior=True, random_state=random_state)
+            imputed_data = imputer.fit_transform(data)
+            imputed_vals = imputed_data[:,0]
+            true_vals = true['A0'].values
+            se_i.append(np.sum((imputed_vals-true_vals)**2))
+
+            # Convert back to DataFrame for easier handling
+            imputed_df = pd.DataFrame(imputed_data, columns=data.columns)
+            
+            # Save the imputed DataFrame to a CSV file
+            imputed_df.to_csv(os.path.join(output_dir, f'imputed_data_{i+1}.csv'), index=False)
+            #print(f'Imputation {i+1} completed and saved with random state {random_state}.')
+        se_i = sum(se_i)/n_imputations
+        return se_i
 
     def calculate_rmse(self, file_paths_masked, file_paths_true):
         n_ctrl = []
@@ -50,30 +71,15 @@ class ImputeAndCalculateRMSE:
             n_ctrl.append(len(data_mask['A0']))
             mse_k = []
             print(f'imputing for {mask}...\n')
-            
             for ID in data_mask['ID'].unique():
                 idx = data_mask.loc[data_mask['ID'] == ID].index
                 #get t and A0 vales for the idx values
                 peptide_dat = data_mask.loc[idx, ['t', 'A0']]
-                imputed = self.imputer_mean.fit_transform(peptide_dat[['A0']])[:,0]
+                true_peptide_dat = data_true.loc[idx, ['t','A0']] 
+                se = self.peptide_dmi_and_rmse(peptide_dat, true_peptide_dat, mask, n_imputations=10)
+                #squared error for the imputed values for each peptide, these will be summed up later            
+                mse_k.append(se)
                 
-                #write the imputed array to a csv file (appending to the csv each loop)
-                # add corresponding columns for ID and time {0,1,3,5,7,10,14} as well 
-                imputed_df = pd.DataFrame(imputed, columns=['A0']) 
-                imputed_df['ID'] = [ID] * len(imputed)
-                imputed_df['t'] = peptide_dat['t'].values
-                
-                # Check if file exists to determine if header should be included
-                imputed_file_path = f'./{self.imputed_dir}/{mask.split('/')[0]}_mean_imputed_{self.n_masked}.csv'
-                if not os.path.isfile(imputed_file_path):
-                    imputed_df.to_csv(imputed_file_path, index=False, mode='a', header=True)
-                else:
-                    imputed_df.to_csv(imputed_file_path, index=False, mode='a', header=False)
-                
-                #calculate squared error for the imputed values for each peptide, these will be summed up later            
-                true = data_true.loc[idx, ['A0']].values 
-                mse = np.sum((true - imputed) ** 2)
-                mse_k.append(mse)
             #sum all the squared errors for each peptide in the strain 
             mse_sum_strain.append(sum(mse_k))
             
@@ -83,7 +89,6 @@ class ImputeAndCalculateRMSE:
         #calculate the root mean squared error for the experiment group
         rmse_ctrl = np.sqrt(mse_sum_ctrl / n_ctrl_total)
         return rmse_ctrl
-
 
     def save_rmse(self, rmse_value):
         with open(f'./{self.output_dir}/rmse_{self.exp_type}.csv', 'a') as f:
