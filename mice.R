@@ -37,7 +37,7 @@ unique_A0 <- aggregate(dat1$A0, by = list(dat1$t, dat1$ID), mean)
 colnames(unique_A0) <- c("t", "ID", "A0")
 
 # Convert long format to wide format
-data <- spread(unique_A0, t, A0) 
+data <- spread(unique_A0, t, A0)
 
 # Merge peptide A0 data with additional metadata stored in data
 data_withNandA <- merge(data, dat, by = "ID")
