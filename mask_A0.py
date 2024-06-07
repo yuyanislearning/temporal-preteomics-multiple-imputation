@@ -60,7 +60,7 @@ def process_and_mask_data(file_paths, exp_type, mask_counts):
                 print(f"An error occurred while writing {masked_file_path}: {e}")
 
 ### Define the number of missing values to mask
-mask_counts = [1, 2, 3, 4]
+mask_counts = [1,2,3,4,5]
 
 ### Process CTRL Data
 process_and_mask_data(ctrl_paths, 'ctrl', mask_counts)
