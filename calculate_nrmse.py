@@ -14,7 +14,7 @@ class ImputationAnalysis:
         self.mask = [1, 2, 3, 4, 5]
         self.masked_data_files = 'hl-data_masked_'
         self.imputed_data_files = f'{imputation}'
-        self.output_dir = 'rmse'
+        self.output_dir = 'nrmse'
         self.folders = [self.filepath_common + s + '_' + e + '/' for s in self.strains for e in self.exp]
         
         if not os.path.exists(self.output_dir):
