@@ -65,7 +65,7 @@ print(glue("{mis_per*100}% of the data is missing"))
 num_cols <- ncol(data_matrix)
 
 # Perform KNN imputation 
-knn_impute <- knn.impute(data_matrix, k = 6, cat.var = 1:num_cols, to.impute = 1:nrow(data_matrix)) # nolint 
+knn_impute <- knn.impute(data_matrix, k = 30, cat.var = 1:num_cols, to.impute = 1:nrow(data_matrix)) # nolint 
 
 # Transpose the imputed matrix
 #knn_impute <- t(knn_impute)
@@ -73,4 +73,4 @@ knn_impute <- knn.impute(data_matrix, k = 6, cat.var = 1:num_cols, to.impute = 1
 # File output directory
 directory <- unlist(strsplit(dat1_file, "/"))[1]
 
-write.csv(knn_impute, glue("{directory}/knn_{n_masked}.csv"))
+write.csv(knn_impute, glue("{directory}/knn_30_{n_masked}.csv"))

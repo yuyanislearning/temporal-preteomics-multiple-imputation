@@ -41,12 +41,16 @@ class ImputationAnalysis:
                     
                     if self.imputation == 'dmi_np':
                         imputed_subset = imputed_subset[imputed_subset['.imp'] == i + 1]
+                    else: 
+                        pass 
                     
                     true = np.array(true_data.drop(columns=['ID']))
                     
+                    #if dmi imputation 
                     if self.imputation == 'dmi_np':
                         imputed = np.array(imputed_subset.drop(columns=['.id', '.imp', 'Unnamed: 0']))
-                    elif self.imputation == 'si_mean':
+                    #if si_mean or knn
+                    elif self.imputation == 'si_mean' or self.imputation == 'knn' or self.imputation == 'knn_30':
                         imputed = np.array(imputed_subset.drop(columns=['Unnamed: 0']))
                     
                     sse_n = np.sum((true - imputed) ** 2)
@@ -58,8 +62,8 @@ class ImputationAnalysis:
             nrmse = np.sum(sse_mask) / sum(ovss)
             print(f'{nrmse} for {m}')
             
-            with open(f'{self.output_dir}/nrmse_{self.imputation}.csv', 'a') as f:
-                f.write(f'{nrmse},{m}\n')
+            with open(f'{self.output_dir}/nrmse.csv', 'a') as f:
+                f.write(f'{nrmse},{m},{self.imputation}\n')
 
 def main():
     parser = argparse.ArgumentParser(description='Run imputation analysis.')
