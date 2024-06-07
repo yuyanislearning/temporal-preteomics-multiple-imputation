@@ -67,8 +67,8 @@ class ImputationAnalysis:
 
 def main():
     parser = argparse.ArgumentParser(description='Run imputation analysis.')
-    parser.add_argument('imputation', type=str, help='Type of imputation method')
-    parser.add_argument('n_imputations', type=int, help='Number of imputated datasets; 1 if not DMI')
+    parser.add_argument('imputation', type=str, help='Type of imputation method: {dmi_np, si_mean, knn_30}')
+    parser.add_argument('n_imputations', type=int, help='Number of imputated datasets; 10 if dmi_np, 1 otherwise')
     args = parser.parse_args()
     
     analysis = ImputationAnalysis(args.imputation, args.n_imputations)
