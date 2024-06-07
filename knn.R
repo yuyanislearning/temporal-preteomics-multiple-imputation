@@ -51,6 +51,11 @@ data_filt1 <- subset(data_filt, select = -c(ID))
 # Convert all columns to numeric
 data_filt1[] <- lapply(data_filt1, function(x) as.numeric(as.character(x)))
 
+#transpose the df so we can impute the time points since knn is doing by rows
+data_filt1 <- t(data_filt1)
+print(colnames(data_filt1))
+print(rownames(data_filt1))
+
 # Ensure data_filt1 is a matrix
 data_matrix <- as.matrix(data_filt1)
 
@@ -60,13 +65,16 @@ print(glue("{mis_per*100}% of the data is missing"))
 
 # Number of columns in data_matrix
 num_cols <- ncol(data_matrix)
-#transpose the matrix so columns are rows and rows are columns
-data_matrix <- t(data_matrix)
+
 
 # Perform KNN imputation 
-knn_impute <- knn.impute(data_matrix, k = 30, cat.var = 1:num_cols, to.impute = 1:nrow(data_matrix)) # nolint 
+knn_impute <- knn.impute(data_matrix, k = 10, cat.var = 1:num_cols, to.impute = 1:nrow(data_matrix)) # nolint 
+
+# Transpose the imputed matrix
+knn_impute <- t(knn_impute)
+print(colnames(knn_impute))
 
 # File output directory
 directory <- unlist(strsplit(dat1_file, "/"))[1]
 
-write.csv(knn_impute, glue("{directory}/test_{n_masked}.csv"))
+write.csv(knn_impute, glue("{directory}/knn_{n_masked}.csv"))
