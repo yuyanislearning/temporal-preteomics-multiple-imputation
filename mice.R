@@ -54,6 +54,10 @@ names(data_filt) <- c("ID", "d0", "d1", "d3", "d5", "d7", "d10", "d14") #, "a", 
 # Store IDs as a vector
 id <- data_filt$ID
 
+#write IDs to file
+# directory <- unlist(strsplit(dat_file, "/"))[1]
+# write.csv(id, glue("{directory}/IDs_{n_masked}.csv"))
+
 # Remove ID column for imputation
 data_filt1 <- subset(data_filt, select = -c(ID))
 
@@ -98,4 +102,3 @@ data_all <- complete(mice_impute, "long")
 directory <- unlist(strsplit(dat_file, "/"))[1]
 
 write.csv(data_all, glue("{directory}/test_{n_masked}.csv"))
-#write.csv(id, glue("{directory}/IDs_{n_masked}.csv"))
