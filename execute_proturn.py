@@ -4,7 +4,7 @@ import subprocess
 
 def run_rscripts():
     filepath_common = 'proturn_output_'
-    strains = ['aj', 'balbc', 'c57', 'cej', 'dba', 'fvb']
+    strains = ['balbc', 'c57', 'cej', 'dba', 'fvb']
     exp = ['ctrl', 'iso'] 
     hl = 'hl.out'
     dat = "dmi_np_"
