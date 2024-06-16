@@ -10,7 +10,7 @@ args <- commandArgs(trailingOnly = TRUE)
 
 # Set default values if arguments are not provided
 if (length(args) != 5) {
-  stop("Usage: Rscript mice.R <dir> <hl.out> <imputed-data> <ids> <n-masked>", call. = FALSE)
+  stop("Usage: Rscript proturn_dmi.R <dir> <hl.out> <imputed-data> <ids> <n-masked>", call. = FALSE)
 }
 
 # Define the directory and file locations
@@ -184,4 +184,3 @@ for (i in 1:10) {
     
   }
 }
-
