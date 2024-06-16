@@ -1,1 +1,0 @@
-ID	Uniprot	Peptide	DP	z	mi	SS	a	pss	kp	N	k	dk	R2
