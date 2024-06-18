@@ -6,6 +6,8 @@ df = pd.read_csv('nrmse/nrmse.csv')
 
 # Set up the plot
 plt.figure(figsize=(10, 6))
+#set y -axis for plot from 0 to 0.35 
+plt.ylim(0, 0.35)
 
 #change the imputation_method column names in df to be more descriptive for the plot
 df['imputation_method'] = df['imputation_method'].replace({'dmi_np': 'Data Multiple Imputation', 
