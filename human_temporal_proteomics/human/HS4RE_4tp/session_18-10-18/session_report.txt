@@ -1,0 +1,60 @@
+### Integration Run Session Report for Session 18-10-18 ###
+
+Session folder directory: F:\Human\Proturn\HS4RE\session_18-10-18
+Integration Report Generated on 10/18/18, 13:24:58.
+
+Parameters used in quantization: 
+Mass Window: -1.0
+Number of smoothing points: -1
+Minimum area: -1.0
+Calculating protein intensities? Yes
+Identifying new peptides? No
+Smoothing Option: Savitsky-Golay
+Number of time points in the mzML folders: 10
+
+
+Integration started on 10/18/18, 10:13:35.
+Integration ended on 10/18/18, 13:24:58.
+
+- End of integration run session report -
+
+### Curve Fitting Run Session Report for Session 18-10-18 ###
+
+Session folder directory: F:\Human\Proturn\HS4RE\session_18-10-18
+Curve Fitting Report Generated on 10/18/18, 16:14:54.
+
+Parameters used in fitting: 
+Minimum R2: -1.0
+Minimum data points: -1
+Minimum time points: -1
+Initial guess for K: -1.0
+pss: -1.0
+Kp: -1.0
+Curve Fitting Type: NS
+
+
+Curve fitting started on [Could not determine].
+Curve fitting ended on [Could not determine].
+
+- End of curve fitting run session report -
+
+### Curve Fitting Run Session Report for Session 18-10-18 ###
+
+Session folder directory: F:\Human\Proturn\HS4RE\session_18-10-18
+Curve Fitting Report Generated on 10/18/18, 18:30:36.
+
+Parameters used in fitting: 
+Minimum R2: -1.0
+Minimum data points: -1
+Minimum time points: -1
+Initial guess for K: -1.0
+pss: -1.0
+Kp: -1.0
+Curve Fitting Type: NS
+
+
+Curve fitting started on [Could not determine].
+Curve fitting ended on [Could not determine].
+
+- End of curve fitting run session report -
+
