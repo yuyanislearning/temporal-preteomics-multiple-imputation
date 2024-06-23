@@ -21,13 +21,13 @@ def get_uniprot_id(protein_name):
 
 # Call Fxn above to map protein names to UniProt IDs
 # Uncomment these lines if it has not been run before
-# protein_to_uniprot = {}
-# for protein in protein_biomarkers:
-#     uniprot_id = get_uniprot_id(protein)
-#     protein_to_uniprot[protein] = uniprot_id
+protein_to_uniprot = {}
+for protein in protein_biomarkers:
+    uniprot_id = get_uniprot_id(protein)
+    protein_to_uniprot[protein] = uniprot_id
 #write the protein to uniprot dictionary to a json file 
-# with open('MarkerDB_Proteins_with_Uniprot_Mapping.json', 'w') as f:
-#     json.dump(protein_to_uniprot, f)
+with open('MarkerDB_Proteins_with_Uniprot_Mapping.json', 'w') as f:
+    json.dump(protein_to_uniprot, f)
 
 #open the json file and load the protein to uniprot dictionary
 with open('MarkerDB_Proteins_with_Uniprot_Mapping.json', 'r') as f:
